@@ -52,7 +52,10 @@ public sealed class JsonSettingsStore : ILanguageStore, IDisclaimerGate, IInvent
             try
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(SettingsPath)!);
-                File.WriteAllText(SettingsPath, JsonSerializer.Serialize(_settings, JsonOptions));
+                string dir = Path.GetDirectoryName(SettingsPath)!;
+                string tmpPath = Path.Combine(dir, Path.GetFileName(SettingsPath) + ".tmp");
+                File.WriteAllText(tmpPath, JsonSerializer.Serialize(_settings, JsonOptions));
+                File.Replace(tmpPath, SettingsPath, null, ignoreMetadataErrors: false);
             }
             catch (Exception ex)
             {
